@@ -26,10 +26,13 @@ module.exports.Signup = async (req, res, next) => {
     const token = createSecretToken(user._id);
 
     // Set token in cookie
-    res.cookie("token", token, {
-      withCredentials: true,
-      httpOnly: true, // More secure
-    });
+   res
+  .cookie("token", token, {
+    httpOnly: true,
+    secure: true,           // ✅ required for HTTPS
+    sameSite: "None",       // ✅ required for cross-origin cookies
+  })
+  .json({ success: true, message: "Login successful", user: user.username });
 
     // Send success response
     res
