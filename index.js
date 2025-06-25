@@ -20,7 +20,8 @@ const authRoute = require("./Routes/AuthRoute");
 
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173",                        // for local dev
+    "https://stocker-dashboard.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }));
@@ -28,12 +29,14 @@ app.use(cookieParser());
 
 app.use("/", authRoute);
 
+mongoose.set('strictQuery', false);
 
 app.get("/allHoldings",async(req,res)=>{
 
    let allHoldings=await HoldingModel.find({});
    res.json(allHoldings);
 });
+
 
 
 
@@ -207,10 +210,21 @@ tempHolding.map((item)=>{
 //adding dummy data using get request 
 
 
+mongoose
+  .connect(url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("✅ MongoDB connected");
 
-app.listen(PORT,()=>{
-    console.log("App started");
-    mongoose.connect(url);
-    console.log("DB connected")
+    // now start the server only when DB is ready
+    app.listen(PORT, () => {
+      console.log(`🚀 Server started on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection failed:", err.message);
+  });
 
-})
+
