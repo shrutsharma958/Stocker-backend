@@ -32,7 +32,7 @@ module.exports.Signup = async (req, res, next) => {
     secure: true,           // ✅ required for HTTPS
     sameSite: "None",       // ✅ required for cross-origin cookies
   })
-  .json({ success: true, message: "Login successful", user: user.username });
+  
 
     // Send success response
     res
